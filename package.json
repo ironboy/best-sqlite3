@@ -1,5 +1,5 @@
 {
-  "name": "best-slqlite-3",
+  "name": "best-sqlite3",
   "version": "1.0.0",
   "description": "A JS-native driver for SQLite3 with middleware for storing Express Sessions included",
   "main": "index.js",
