@@ -5,7 +5,11 @@
 // The express session documentation says that a store should
 // extend Node EventEmitter, but actually it shold extend their
 // basic Store class!
-const esStore = require("express-session").Store;
+let esStore = Object;
+try {
+  esStore = require("express-session").Store;
+}
+catch (e) { }
 
 module.exports = class Store extends esStore {
 
