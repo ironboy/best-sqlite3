@@ -1,0 +1,29 @@
+{
+  "name": "best-slqlite-3",
+  "version": "1.0.0",
+  "description": "A JS-native driver for SQLite3 with middleware for storing Express Sessions included",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ironboy/best-sqlite3"
+  },
+  "author": "ironboy NodeHill",
+  "license": "MIT",
+  "keywords": [
+    "express-session",
+    "database driver",
+    "SQLite"
+  ],
+  "bugs": {
+    "url": "https://github.com/ironboy/best-sqlite3/issues"
+  },
+  "homepage": "https://github.com/ironboy/best-sqlite3#readme",
+  "dependencies": {
+    "sql.js": "^1.4.0"
+  },
+  "devDependencies": {}
+}
