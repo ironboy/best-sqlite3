@@ -3,15 +3,18 @@
 
 const fs = require('fs');
 const path = require('path');
+const sqlJs = require('sql.js');
 const Store = require('./Store');
 
 module.exports = class BestSqlite {
 
   debugSave = false;
-  SQL = global.___SQL;
-  appPath = global.___appPath;
+  SQL = this.constructor.SQL;
+  appPath = this.constructor.appPath;
 
-  static connect(...args) {
+  static async connect(...args) {
+    this.SQL = this.SQL || await sqlJs();
+    this.appPath = Object.keys(require.cache)[0];
     return new BestSqlite(...args);
   }
 
