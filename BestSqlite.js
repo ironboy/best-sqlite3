@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Store = require('./store');
+const Store = require('./Store');
 
 module.exports = class BestSqlite {
 
