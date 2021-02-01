@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const sqlJs = require('sql.js');
+const chokidar = require('chokidar');
 const Store = require('./Store');
 
 module.exports = class BestSqlite {
@@ -11,6 +12,7 @@ module.exports = class BestSqlite {
   debugSave = false;
   SQL = this.constructor.SQL;
   appPath = this.constructor.appPath;
+  ignoreNextReadFile = false;
 
   static async connect(...args) {
     this.SQL = this.SQL || await sqlJs();
@@ -37,6 +39,15 @@ module.exports = class BestSqlite {
     }
     catch (err) { console.error(err); }
     process.on('exit', () => this.saveDbToFileReal(true, true));
+
+    chokidar.watch(filePath).on('change', (event) => {
+      console.log("HERE BUT", this.ignoreNextReadFile)
+      if (!this.ignoreNextReadFile) {
+        console.log("READING")
+        this.db = new this.SQL.Database(fs.readFileSync(filePath));
+      }
+      this.ignoreNextReadFile = false;
+    });
   }
 
   paramPrep(obj) {
@@ -86,7 +97,7 @@ module.exports = class BestSqlite {
 
   saveDbToFile() {
     clearTimeout(this.dbSaveTimeout);
-    this.dbSaveTimeout = setTimeout(() => this.saveDbToFileReal(), 1000);
+    this.dbSaveTimeout = setTimeout(() => this.saveDbToFileReal(), 1);
   }
 
   saveDbToFileReal(sync = false, exit = false) {
@@ -102,6 +113,24 @@ module.exports = class BestSqlite {
         !err && this.debugSave && console.log('Saved DB to file');
       });
     }
+    this.ignoreNextReadFile = true;
+  }
+
+  getTablesAndRows(type) {
+    return this.run(`
+      SELECT name
+      FROM sqlite_master
+      WHERE type = $type
+      AND substr(name,0,7) != "sqlite" 
+    `, { type }).map(x => x.name);
+  }
+
+  get tables() {
+    return this.getTablesAndRows('table');
+  }
+
+  get views() {
+    return this.getTablesAndRows('view');
   }
 
   sessionStore(settings = {}) {
