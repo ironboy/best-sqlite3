@@ -41,9 +41,7 @@ module.exports = class BestSqlite {
     process.on('exit', () => this.saveDbToFileReal(true, true));
 
     chokidar.watch(filePath).on('change', (event) => {
-      console.log("HERE BUT", this.ignoreNextReadFile)
       if (!this.ignoreNextReadFile) {
-        console.log("READING")
         this.db = new this.SQL.Database(fs.readFileSync(filePath));
       }
       this.ignoreNextReadFile = false;
