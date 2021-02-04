@@ -1,40 +1,105 @@
 # best-sqlite3
-What is **best-sqlite3**?
-* A native JavaScript driver for running SQLite3 with Node.js.
-* It does not need node-gyp or binaries when installed (in contrast to other SQLite3 drivers for node.js)
-* It includes middleware for creating an Express Session store, storing Express-sessions in your SQLite3 database.
 
-Some examples, working on a better README...
+## What is SQLite3?
+[SQLite](https://www.sqlite.org/index.html), version 3, is an *RDBMS* -  relational database management system written in C.
 
-## Basic db api
-```js
-const bestSqlite = require('./index');
+It differs from most other systems (MySQL, Postgre etc) in that there is not a separate server running the database, instead the SQLite code gets embedded in the application you are writing.
 
-async function bestSQliteBasicDemo() {
-  const db = await bestSqlite.connect('my-fine-db.db');
-  let a = db.run('CREATE TABLE IF NOT EXISTS hello (a int, b string)');
-  let b = db.run('INSERT INTO hello VALUES ($a,$b)', { a: 0, b: 'Hello' });
-  let c = db.run('INSERT INTO hello VALUES ($a,$b)', { a: 1, b: 'Goodbye' });
-  db.regFunc('fancy', (x) => x + x);
-  let d = db.run('SELECT *, fancy(b) as c FROM hello WHERE a < $a', { a: 3 });
-  console.log(a, b, c, d);
-}
+SQLite stores a whole database in *one* single file.
 
-bestSQliteBasicDemo();
+If you want a graphical editor for SQLite we recommend [SQLiteStudio](https://sqlitestudio.pl/) - cross platform, with a nice GUI.
+
+**Note:**
+The SQL dialect spoken by SQLite is similar to the syntax in PostgreSQL and rather similar to MySQL/MariaDB. An important difference compared to MySQL/MariaDB is that you *can not* use *&&* instead of AND or *||* instead of OR. Just get used to writing AND and OR!
+
+## What is **best-sqlite3**?
+* **best-sqlite3** is a driver that lets you run *SQLite3* with Node.js.
+* It differs from other Node.js drivers fo in that it does not need *node-gyp* or any binaries during installation, because it runs SQLite3 recompiled to JavaScript/webassembly (thanks to the SQLite.js project)
+* **best-sqlite3** is probably *not* the fastest SQLite3 driver around. Chances are that [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) is. But **best-sqlite3** provides a simple API and guarantees you that you won't run into problems with compiling bindings to other languages - the npm installation will be trouble free regardless of your operating system, Node.js version etc.
+
+Also:
+* **best-sqlite3** includes middleware for creating an [Express Session store](https://www.npmjs.com/package/express-session#api), with which you can store Express-sessions in your SQLite3 database, making them survive server restarts.
+
+## Installation
+```
+npm i best-sqlite3
 ```
 
-## With Express Session
-```js
-const express = require('express');
-const session = require('express-session');
-const bestSqlite = require('./index');
+## Basic usage
+Require **best-sqlite3** and connect to a database, then run queries.
 
-async function bestSQliteExpressSessionDemo() {
+```js
+(async ()=> { // start of async wrapper
+
+  // Require bestSqlite
+  const bestSqlite = require('best-sqlite3');
+
+  // Connect to a database
+  // (if the file does not exist 
+  //  a new db will be created)
+  const db = await bestSqlite
+    .connect('path-to-db-file.sqlite3');
+
+  // Run a query
+  let allUsers = db.run(`
+    SELECT * FROM users
+  `);
+
+  // Run a query with parameters
+  // (a prepared statement)
+  let allJanes = db.run(
+    `
+      SELECT * FROM users
+      WHERE firstName = $firstName
+    `, 
+    {
+      firstName: 'Jane'
+    }
+  );
+
+
+})().catch(e => console.error(e)); 
+// end of async wrapper
+```
+
+## What does the run-method return?
+* For SELECT-queries *run* will return an array of objects. Each object corresponds to a row in the database.
+* For other statements (CREATE, INSERT, UPDATE, DELETE) *run* returns an object with the property **rowsModified** (number of rows modified) 
+* For INSERT statements the extra property **lastInsertRowId** (the id of the latest row inserted) is also provided.
+
+## User definied functions with the regFunc-method
+You can define your own functions written in JavaScript that you can then use in your SQL-queries.
+
+```js
+// Register a function
+db.regFunc('concatWithSpace', (x,y) => x + ' ' + y);
+
+// Use the function in your query
+db.run(`
+  SELECT concatWithSpace(firstName, lastName) AS fullName
+  FROM users
+`);
+```
+
+## Storing express-session sessions in the database
+The npm module [express-session](https://www.npmjs.com/package/express-session) is used to get user sessions based on cookies to work with [express](https://www.npmjs.com/package/express) (the popular web server for Node.js).
+
+By default **express-session** stores session in internal memory, but its documentation recommend against doing so in production. 
+
+**best-sqlite3** provides middleware that can be used together with **express-session** to automatically store sessions in the database instead.
+
+```js
+(async ()=> { // start of async wrapper
+
+  const express = require('express');
+  const session = require('express-session');
+  const bestSqlite = require('./index');
+
   const app = express();
-  const db = await bestSqlite.connect('my-fine-session-db.db');
+  const db = await bestSqlite.connect('path-to-db-file.sqlite3');
 
   // Setting up the express session middleware
-  // with bestSqlite a store
+  // with bestSqlite as a store
   app.use(session({
     secret: 'your own secret',
     resave: false,
@@ -45,13 +110,17 @@ async function bestSQliteExpressSessionDemo() {
     store: db.sessionStore(
       // Optional settings
       {
-        tableName: 'sessions', // What table to store sessions in
-        deleteAfterInactivityMinutes: 120 // Minutes a session lives
+        // What table to store sessions in
+        tableName: 'sessions', 
+        // Minutes a session lives after inactivity
+        deleteAfterInactivityMinutes: 120
       }
     )
   }));
 
-  // Check that sessions work (restart to see the urls still remembered)
+  // Check that storing sessions in the db works 
+  // (restart your app/server to see that 
+  //  the urls are still remembered)
   app.get('*', (req, res) => {
     let { visited } = req.session;
     if (!visited) { visited = req.session.visited = []; }
@@ -61,7 +130,6 @@ async function bestSQliteExpressSessionDemo() {
 
   app.listen(3000, () => console.log('Listening on port 3000!'));
 
-}
-
-bestSQliteExpressSessionDemo();
+})().catch(e => console.error(e)); 
+// end of async wrapper
 ```
