@@ -81,6 +81,17 @@ db.run(`
 `);
 ```
 
+## Lists tables and views in a database
+You can easily get a list (array of strings) with the names of the tables in a database. The same goes for all the views in a database...
+
+```js
+// db.tables - a list of all tables in the database
+console.log(db.tables);
+
+// db.views - a list of all views in the database
+console.log(db.views);
+```
+
 ## Storing express-session sessions in the database
 The npm module [express-session](https://www.npmjs.com/package/express-session) is used to get user sessions based on cookies to work with [express](https://www.npmjs.com/package/express) (the popular web server for Node.js).
 
@@ -93,7 +104,7 @@ By default **express-session** stores session in internal memory, but its docume
 
   const express = require('express');
   const session = require('express-session');
-  const bestSqlite = require('./index');
+  const bestSqlite = require('best-sqlite3');
 
   const app = express();
   const db = await bestSqlite.connect('path-to-db-file.sqlite3');
