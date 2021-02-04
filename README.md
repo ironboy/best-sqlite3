@@ -29,7 +29,7 @@ npm i best-sqlite3
 Require **best-sqlite3** and connect to a database, then run queries.
 
 ```js
-(async ()=> { // start of async wrapper
+(async () => { // start of async wrapper
 
   // Require bestSqlite
   const bestSqlite = require('best-sqlite3');
@@ -72,7 +72,7 @@ You can define your own functions written in JavaScript that you can then use in
 
 ```js
 // Register a function
-db.regFunc('concatWithSpace', (x,y) => x + ' ' + y);
+db.regFunc('concatWithSpace', (x, y) => x + ' ' + y);
 
 // Use the function in your query
 db.run(`
@@ -89,7 +89,7 @@ By default **express-session** stores session in internal memory, but its docume
 **best-sqlite3** provides middleware that can be used together with **express-session** to automatically store sessions in the database instead.
 
 ```js
-(async ()=> { // start of async wrapper
+(async () => { // start of async wrapper
 
   const express = require('express');
   const session = require('express-session');
