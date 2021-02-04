@@ -67,7 +67,7 @@ Require **best-sqlite3** and connect to a database, then run queries.
 * For other statements (CREATE, INSERT, UPDATE, DELETE) *run* returns an object with the property **rowsModified** (number of rows modified) 
 * For INSERT statements the extra property **lastInsertRowId** (the id of the latest row inserted) is also provided.
 
-## User definied functions with the regFunc-method
+## User defined functions with the regFunc-method
 You can define your own functions written in JavaScript that you can then use in your SQL-queries.
 
 ```js
