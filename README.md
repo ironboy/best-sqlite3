@@ -14,7 +14,7 @@ The SQL dialect spoken by SQLite is similar to the syntax in PostgreSQL and rath
 
 ## What is **best-sqlite3**?
 * **best-sqlite3** is a driver that lets you run *SQLite3* with Node.js.
-* It differs from other Node.js drivers fo in that it does not need *node-gyp* or any binaries during installation, because it runs SQLite3 recompiled to JavaScript/webassembly (thanks to the SQLite.js project)
+* It differs from other Node.js drivers fo in that it does not need *node-gyp* or any binaries during installation, because it runs SQLite3 recompiled to JavaScript/webassembly (thanks to the [SQL.js](https://www.npmjs.com/package/sql.js]) project)
 * **best-sqlite3** is probably *not* the fastest SQLite3 driver around. Chances are that [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) is. But **best-sqlite3** provides a simple API and guarantees you that you won't run into problems with compiling bindings to other languages - the npm installation will be trouble free regardless of your operating system, Node.js version etc.
 
 Also:
