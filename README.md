@@ -15,7 +15,8 @@ The SQL dialect spoken by SQLite is similar to the syntax in PostgreSQL and rath
 ## What is **best-sqlite3**?
 * **best-sqlite3** is a driver that lets you run *SQLite3* with Node.js.
 * It differs from other Node.js drivers in that it does not need *node-gyp* or any binaries during installation, because it runs SQLite3 recompiled to JavaScript/webassembly (thanks to the [SQL.js](https://www.npmjs.com/package/sql.js]) project)
-* **best-sqlite3** is probably *not* the fastest SQLite3 driver around. Chances are that [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) is. But **best-sqlite3** provides a simple API and guarantees you that you won't run into problems with compiling bindings to other languages - the npm installation will be trouble free regardless of your operating system, Node.js version etc.
+* **best-sqlite3** provides a simple API and guarantees you that you won't run into problems with compiling bindings to other languages - the npm installation will be trouble free regardless of your operating system, Node.js version etc.
+* **best-sqlite3** is quite fast. See the tests below comparing it to the drivers [sqlite3](https://www.npmjs.com/package/sqlite3) and [better-sqlite3](https://www.npmjs.com/package/better-sqlite3).
 
 Also:
 * **best-sqlite3** includes middleware for creating an [Express Session store](https://www.npmjs.com/package/express-session#api), with which you can store Express-sessions in your SQLite3 database, making them survive server restarts.
@@ -143,4 +144,48 @@ By default **express-session** stores session in internal memory, but its docume
 
 })().catch(e => console.error(e)); 
 // end of async wrapper
+```
+
+### Speed tests
+[You can find the code used for running the tests described below here](https://github.com/ironboy/sqlite-drivers-for-noide-speed-comparison).
+
+#### Comparing the speed of these three SQLite3 drivers for Node.js
+Which drivers?
+* sqlite3
+* better-sqlite3
+* best-sqlite3
+
+#### Which tests are run?
+In a table with 5 columns (one id column with auto increment, 3 string columns - using short strings, and one timestamp column) do the following:
+* run 1000 insert of single rows
+* run 1000 selects (of single rows by id)
+* run 1000 updates (each for a single row, found by id)
+* run 1000 deletes (each of a single row by id)
+
+#### Results
+Results on a Macbook 2017 with an i5 processor and db:s stored on the internal SSD:
+
+```
+sqlite3
+------------------
+INSERTS 1824.37 ms
+SELECTS  111.30 ms
+UPDATES 1613.14 ms
+DELETES 1386.40 ms
+
+
+better-sqlite3
+------------------
+INSERTS 1159.83 ms
+SELECTS   53.23 ms
+UPDATES 1661.20 ms
+DELETES 1440.97 ms
+
+
+best-sqlite3
+------------------
+INSERTS  344.90 ms
+SELECTS   87.61 ms
+UPDATES  166.80 ms
+DELETES  174.07 ms
 ```
