@@ -146,23 +146,23 @@ By default **express-session** stores session in internal memory, but its docume
 // end of async wrapper
 ```
 
-### Speed tests
+## Speed tests
 [You can find the code used for running the tests described below here](https://github.com/ironboy/sqlite-drivers-for-noide-speed-comparison).
 
-#### Comparing the speed of these three SQLite3 drivers for Node.js
+### Comparing the speed of these three SQLite3 drivers for Node.js
 Which drivers?
 * sqlite3
 * better-sqlite3
 * best-sqlite3
 
-#### Which tests are run?
+### Which tests are run?
 In a table with 5 columns (one id column with auto increment, 3 string columns - using short strings, and one timestamp column) do the following:
 * run 1000 insert of single rows
 * run 1000 selects (of single rows by id)
 * run 1000 updates (each for a single row, found by id)
 * run 1000 deletes (each of a single row by id)
 
-#### Results
+### Results
 Results on a Macbook 2017 with an i5 processor and db:s stored on the internal SSD:
 
 ```
