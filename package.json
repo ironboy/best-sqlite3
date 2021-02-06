@@ -1,6 +1,6 @@
 {
   "name": "best-sqlite3",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A JS-native driver for SQLite3 with middleware for storing Express Sessions included",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,10 @@
   "keywords": [
     "express-session",
     "database driver",
-    "SQLite"
+    "SQLite",
+    "sqlite3",
+    "better-sqlite3",
+    "driver"
   ],
   "bugs": {
     "url": "https://github.com/ironboy/best-sqlite3/issues"
