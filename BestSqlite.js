@@ -6,6 +6,7 @@ const path = require('path');
 const sqlJs = require('sql.js');
 const chokidar = require('chokidar');
 const Store = require('./Store');
+const Client = require('./Client');
 
 module.exports = class BestSqlite {
 
@@ -15,6 +16,10 @@ module.exports = class BestSqlite {
   ignoreNextReadFile = false;
 
   static async connect(...args) {
+    if (args.length > 1 && !isNaN(+args[0])) {
+      let c = new Client();
+      return await c.connect(...args);
+    }
     this.SQL = this.SQL || await sqlJs();
     this.appPath = Object.keys(require.cache)[0];
     return new BestSqlite(...args);
@@ -95,7 +100,7 @@ module.exports = class BestSqlite {
 
   saveDbToFile() {
     clearTimeout(this.dbSaveTimeout);
-    this.dbSaveTimeout = setTimeout(() => this.saveDbToFileReal(), 1);
+    this.dbSaveTimeout = setTimeout(() => this.saveDbToFileReal(), global.__bestSqliteRunningAsServer ? 1000 : 1);
   }
 
   saveDbToFileReal(sync = false, exit = false) {
