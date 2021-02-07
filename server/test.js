@@ -31,8 +31,8 @@ const dbName = path.join(__dirname, 'test-db.db');
   fs.existsSync(dbName)
     && fs.unlinkSync(dbName);
 
-  const db = await bestSqlite
-    .connect(27018, dbName);
+  const db = await bestSqlite.connect(dbName);
+  //.connect(27018, dbName);
 
   await db.run(/*sql*/`
     CREATE TABLE users (

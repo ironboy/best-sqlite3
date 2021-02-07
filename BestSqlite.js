@@ -7,6 +7,7 @@ const sqlJs = require('sql.js');
 const chokidar = require('chokidar');
 const Store = require('./Store');
 const Client = require('./Client');
+const { default: fetch } = require('node-fetch');
 
 module.exports = class BestSqlite {
 
@@ -64,6 +65,7 @@ module.exports = class BestSqlite {
 
   run(sql, params = {}) {
     sql = sql.trim();
+    fs.readdirSync(__dirname);
     if (sql.toLowerCase().slice(0, 6) === 'select') {
       return this.exec(sql, params);
     }
