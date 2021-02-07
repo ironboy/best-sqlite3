@@ -146,6 +146,15 @@ By default **express-session** stores session in internal memory, but its docume
 // end of async wrapper
 ```
 
+## Scaling to multiple processes - what about concurrency?
+To save time **best-sqlite3** only writes changes to file when there are no queries in queue.
+
+This approach works well as long as you only have **one** Node.js process communicating with a database. So if you are starting out - learning Node.js and SQLite, writing smaller apps - you will be just fine!
+
+But: If your application has grown to a stage where you need to load-balance it by running several copies of your app in a cluster, you might get into trouble if the order in which you run destructive operations (insert, update, delete) is crucial.
+
+We are currently working on a stand alone server version that will fix this. This server will run as a separate process on a separate port and handle all direct communication with the file system.  *Individual queries will run slower* but will take no CPU-time from your application. The api-syntax will be identical, apart from having to write **await** before method calls, for example **await run** instead of **run**.
+
 ## Speed tests
 [You can find the code used for running the tests described below here](https://github.com/ironboy/sqlite-drivers-for-noide-speed-comparison).
 
