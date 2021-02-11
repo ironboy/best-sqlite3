@@ -156,7 +156,7 @@ But: If your application has grown to a stage where you need to load-balance it 
 We are currently working on a stand alone server version that will fix this. This server will run as a separate process on a separate port and handle all direct communication with the file system.  *Individual queries will run slower* but will take no CPU-time from your application. The api-syntax will be identical, apart from having to write **await** before method calls, for example **await run** instead of **run**.
 
 ## Speed tests
-[You can find the code used for running the tests described below here](https://github.com/ironboy/sqlite-drivers-for-noide-speed-comparison).
+[You can find the code used for running the tests described below here](https://github.com/ironboy/sqlite-drivers-for-node-speed-comparison).
 
 ### Comparing the speed of these three SQLite3 drivers for Node.js
 Which drivers?
