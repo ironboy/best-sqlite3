@@ -13,7 +13,6 @@ module.exports = class BestSqlite {
   SQL = this.constructor.SQL;
   appPath = this.constructor.appPath;
   ignoreNextReadFile = false;
-  inTransaction = false;
 
   static async connect(...args) {
     this.SQL = this.SQL || await sqlJs();
@@ -59,10 +58,6 @@ module.exports = class BestSqlite {
   }
 
   run(sql, params = {}) {
-    if (!this.inTransaction) {
-      this.db.run('BEGIN TRANSACTION');
-      this.inTransaction = true;
-    }
     sql = sql.trim();
     if (sql.toLowerCase().slice(0, 6) === 'select') {
       return this.exec(sql, params);
@@ -104,9 +99,6 @@ module.exports = class BestSqlite {
   }
 
   saveDbToFileReal(sync = false, exit = false) {
-    if (this.inTransaction) {
-      this.db.run('COMMIT');
-    }
     let data = this.db.export();
     let buffer = Buffer.from(data);
     if (sync) {
