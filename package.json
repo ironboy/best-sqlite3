@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/ironboy/best-sqlite3#readme",
   "dependencies": {
-    "chokidar": "^3.5.1",
-    "sql.js": "^1.4.0"
-  },
-  "devDependencies": {}
+    "chokidar": "^3.5.3",
+    "sql": "^0.78.0",
+    "sql.js": "^1.6.2"
+  }
 }
